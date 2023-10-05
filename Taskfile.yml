@@ -61,3 +61,10 @@ tasks:
   github:open:
     cmds:
       - open -na "Google Chrome" --args --new-window --incognito "https://github.com/marian13/convenient_service_integration"
+
+  ##
+  # NOTE: Dev only command.
+  #
+  tmuxinator:start:
+    cmds:
+      - direnv exec . tmuxinator start convenient_service_integration --project-config=.dev/.tmuxinator.yml
