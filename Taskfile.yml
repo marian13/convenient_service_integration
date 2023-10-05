@@ -29,6 +29,23 @@ tasks:
       - docker compose run ruby_3.2 bash
     interactive: true
 
+  ##
+  # NOTE: Dev only command.
+  # NOTE: macOS specific command.
+  # NOTE: Used by `tmuxinator`.
+  #
+  docker:start:
+    cmds:
+      - open -a Docker
+
+  ##
+  # NOTE: Dev only command.
+  # NOTE: Used by `tmuxinator`.
+  #
+  editor:open:
+    cmds:
+      - code .
+
   gemfiles:copy:
     cmds:
       - cp app/rails_5.2/app/Gemfile app/rails_5.2/app/Gemfile.{{.RUBY_VERSION}}
@@ -36,3 +53,11 @@ tasks:
       - cp app/rails_6.1/app/Gemfile app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}}
       - cp app/rails_7.0/app/Gemfile app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}
 
+  ##
+  # NOTE: Dev only command.
+  # NOTE: macOS specific command.
+  # NOTE: Used by `tmuxinator`.
+  #
+  github:open:
+    cmds:
+      - open -na "Google Chrome" --args --new-window --incognito "https://github.com/marian13/convenient_service_integration"

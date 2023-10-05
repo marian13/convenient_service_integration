@@ -1,0 +1,20 @@
+##
+# NOTE: Tmuxinator config options.
+# - https://github.com/tmuxinator/tmuxinator#create-a-project
+#
+name: convenient_service_integration
+root: .
+
+on_project_start:
+  - task editor:open
+  - task docker:start
+  - task github:open
+
+windows:
+  - main:
+      layout: even-vertical
+      root: .
+      panes:
+        - task docker:bash:ruby_2.7
+        - task docker:bash:ruby_3.2
+        - git status
