@@ -1,0 +1,38 @@
+version: '3'
+
+tasks:
+  docker:bash:ruby_2.7:
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "2.7" }
+      - docker compose run ruby_2.7 bash
+    interactive: true
+
+  docker:bash:ruby_3.0:
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.0" }
+      - docker compose run ruby_3.0 bash
+    interactive: true
+
+  docker:bash:ruby_3.1:
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.1" }
+      - docker compose run ruby_3.1 bash
+    interactive: true
+
+  docker:bash:ruby_3.2:
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.2" }
+      - docker compose run ruby_3.2 bash
+    interactive: true
+
+  gemfiles:copy:
+    cmds:
+      - cp app/rails_5.2/app/Gemfile app/rails_5.2/app/Gemfile.{{.RUBY_VERSION}}
+      - cp app/rails_6.0/app/Gemfile app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}}
+      - cp app/rails_6.1/app/Gemfile app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}}
+      - cp app/rails_7.0/app/Gemfile app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}
+
