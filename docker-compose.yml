@@ -1,0 +1,84 @@
+version: "3.9"
+
+services:
+  mysql_5.7:
+    image: mysql:5.7
+    container_name: mysql_5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: mysql_5.7
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+    ports:
+      - ${MYSQL_PORT}:${MYSQL_PORT}
+    volumes:
+      - ./tmp/mysql_5.7:/var/lib/mysql
+
+  ruby_2.7:
+    build:
+      context: .
+      dockerfile: ./docker/ruby_2.7/Dockerfile
+    container_name: ruby_2.7
+    depends_on:
+      - mysql_5.7
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./app:/app
+
+  ruby_3.0:
+    build:
+      context: .
+      dockerfile: ./docker/ruby_3.0/Dockerfile
+    container_name: ruby_3.0
+    depends_on:
+      - mysql_5.7
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./app:/app
+
+  ruby_3.1:
+    build:
+      context: .
+      dockerfile: ./docker/ruby_3.1/Dockerfile
+    container_name: ruby_3.1
+    depends_on:
+      - mysql_5.7
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./app:/app
+
+  ruby_3.2:
+    build:
+      context: .
+      dockerfile: ./docker/ruby_3.2/Dockerfile
+    container_name: ruby_3.2
+    depends_on:
+      - mysql_5.7
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./app:/app
