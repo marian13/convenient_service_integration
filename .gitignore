@@ -1,0 +1,45 @@
+##
+# NOTE: Ignores `Gemfile` amd `Gemfile.lock` used in docker containers.
+#
+# NOTE: `Gemfile*` matches all files that start with Gemfile in any nesting.
+# NOTE: `/app/rails*/app/Gemfile*` matches all files that start with Gemfile only from root folder.
+#
+/app/rails*/app/Gemfile*
+
+##
+# NOTE: Ignores `log` folder for Rails apps.
+# NOTE: Rails apps use `.keep` instead of `.gitkeep`.
+#
+/app/rails*/app/log/*
+!/app/rails*/app/log/.keep
+
+##
+# NOTE: Ignores `tmp` folder for Rails apps.
+# NOTE: Rails apps use `.keep` instead of `.gitkeep`.
+#
+/app/rails*/app/tmp/*
+!/app/rails*/app/tmp/.keep
+
+##
+# NOTE: Ignores `pids` folder for Rails apps.
+# NOTE: Rails apps use `.keep` instead of `.gitkeep`.
+#
+/app/rails*/app/tmp/pids/*
+!/app/rails*/app/tmp/pids/
+!/app/rails*/app/tmp/pids/.keep
+
+##
+# NOTE: Ignores `.DS_Store` in any nesting.
+#
+/.DS_Store
+
+##
+# NOTE: Ignores `tmp` content, but NOT the folder.
+#
+/tmp/*
+!/tmp/.gitkeep
+
+##
+# NOTE: Ignores `TODO.md`. Usually, this file is used for notes that are NOT ready to be shared with the outside world.
+#
+/TODO.md
