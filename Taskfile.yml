@@ -29,6 +29,37 @@ tasks:
       - docker compose run --rm ruby_3.2 bash
     interactive: true
 
+  docker:console:ruby:rails:
+    internal: true
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "{{.RUBY_VERSION}}" }
+      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails console'
+
+  docker:console:ruby_2.7:rails_5.2:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2" }
+    interactive: true
+
+  docker:console:ruby_2.7:rails_6.0:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0" }
+    interactive: true
+
+  docker:console:ruby_2.7:rails_6.1:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1" }
+    interactive: true
+
+  docker:console:ruby_2.7:rails_7.0:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0" }
+    interactive: true
+
   ##
   # NOTE: Dev only command.
   # NOTE: macOS specific command.
@@ -45,6 +76,32 @@ tasks:
   editor:open:
     cmds:
       - code .
+
+  gemfiles:clean:
+    cmds:
+      - rm app/rails_5.2/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
+      - rm app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
+      - rm app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
+      - rm app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
+      - rm app/rails_5.2/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
+      - rm app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
+      - rm app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
+      - rm app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
+      - rm app/rails_5.2/app/Gemfile.lock 2> /dev/null || true
+      - rm app/rails_6.0/app/Gemfile.lock 2> /dev/null || true
+      - rm app/rails_6.1/app/Gemfile.lock 2> /dev/null || true
+      - rm app/rails_7.0/app/Gemfile.lock 2> /dev/null || true
+
+  gemfiles:clean:all:
+    cmds:
+      - task: gemfiles:clean
+        vars: { RUBY_VERSION: "2.7" }
+      - task: gemfiles:clean
+        vars: { RUBY_VERSION: "3.0" }
+      - task: gemfiles:clean
+        vars: { RUBY_VERSION: "3.1" }
+      - task: gemfiles:clean
+        vars: { RUBY_VERSION: "3.2" }
 
   gemfiles:copy:
     cmds:
