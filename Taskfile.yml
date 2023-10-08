@@ -39,6 +39,16 @@ tasks:
       - rm app/rails_{{.RAILS_VERSION}}/app/README.md
       - echo -e '# Setup\n\n- This app was created by `task app:rails:new RAILS_VERSION={{.RAILS_VERSION}}`.' >> app/rails_{{.RAILS_VERSION}}/app/README.md
 
+  app:rails:delete:
+    preconditions:
+      ##
+      # - https://github.com/go-task/task/issues/241
+      #
+      - sh: "[ '{{.RAILS_VERSION}}' != '<no value>' ]"
+        msg: "ENV variable `RAILS_VERSION` is NOT set"
+    cmds:
+      - rm -rf app/rails_{{.RAILS_VERSION}}
+
   docker:bash:ruby_2.7:
     cmds:
       - task: gemfiles:copy
