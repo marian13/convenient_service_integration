@@ -1,0 +1,22 @@
+##
+# - https://github.com/sidekiq/sidekiq/issues/5140
+#
+development:
+  database: <%= ENV.fetch("DATABASE_PREFIX") %>_app_development
+  adapter:  mysql2
+  encoding: utf8
+  username: <%= ENV.fetch("MYSQL_ROOT_USER") %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") %>
+  host: <%= ENV.fetch("MYSQL_HOST") %>
+  port: <%= ENV.fetch("MYSQL_PORT") %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+test:
+  database: <%= ENV.fetch("DATABASE_PREFIX") %>_app_test
+  adapter:  mysql2
+  encoding: utf8
+  username: <%= ENV.fetch("MYSQL_ROOT_USER") %>
+  password: <%= ENV.fetch("MYSQL_ROOT_PASSWORD") %>
+  host: <%= ENV.fetch("MYSQL_HOST") %>
+  port: <%= ENV.fetch("MYSQL_PORT") %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
