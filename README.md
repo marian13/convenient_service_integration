@@ -36,3 +36,5 @@
 | [Rails 6.0](https://api.rubyonrails.org/v6.0/) | ✅ | - |
 | [Rails 6.1](https://api.rubyonrails.org/v6.1/) | ✅ | - |
 | [Rails 7.0](https://api.rubyonrails.org/v7.0/) | ✅ | - |
+
+\* Check [Ruby & Rails Compatibility Table](https://www.fastruby.io/blog/ruby/rails/versions/compatibility-table.html) for a more comprehensive comparison.
