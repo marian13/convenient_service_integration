@@ -2,6 +2,12 @@ version: '3'
 
 tasks:
   app:rails:new:
+    preconditions:
+      ##
+      # - https://github.com/go-task/task/issues/241
+      #
+      - sh: "[ '{{.RAILS_VERSION}}' != '<no value>' ]"
+        msg: "ENV variable `RAILS_VERSION` is NOT set"
     ##
     # TODO: Create Rails template.
     #
@@ -38,6 +44,19 @@ tasks:
       #
       - rm app/rails_{{.RAILS_VERSION}}/app/README.md
       - echo -e '# Setup\n\n- This app was created by `task app:rails:new RAILS_VERSION={{.RAILS_VERSION}}`.' >> app/rails_{{.RAILS_VERSION}}/app/README.md
+      ##
+      # NOTE: Prints further manual steps.
+      #
+      # NOTE: Multiline commands.
+      # - https://github.com/go-task/task/issues/274
+      #
+      - |
+        echo -e 'Further manual steps:\n'
+        echo -e '- Add `RUN cd rails_{{.RAILS_VERSION}}/app && bundle install` to all `docker/ruby_x.x/Dockerfile` files.'
+        echo -e '- Update `gemfiles:clean` task.'
+        echo -e '- Update `gemfiles:copy` task.'
+        echo -e '- Introduce `docker:console:ruby_x.x:rails_{{.RAILS_VERSION}}` tasks.'
+        echo -e '- Rebuild Docker images.'
 
   app:rails:delete:
     preconditions:
@@ -108,6 +127,12 @@ tasks:
         vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0" }
     interactive: true
 
+  docker:console:ruby_2.7:rails_7.1:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1" }
+    interactive: true
+
   docker:console:ruby_3.0:rails_5.2:
     cmds:
       - task: docker:console:ruby:rails
@@ -130,6 +155,12 @@ tasks:
     cmds:
       - task: docker:console:ruby:rails
         vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:console:ruby_3.0:rails_7.1:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1" }
     interactive: true
 
   docker:console:ruby_3.1:rails_5.2:
@@ -156,6 +187,12 @@ tasks:
         vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0" }
     interactive: true
 
+  docker:console:ruby_3.1:rails_7.1:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1" }
+    interactive: true
+
   docker:console:ruby_3.2:rails_5.2:
     cmds:
       - task: docker:console:ruby:rails
@@ -178,6 +215,12 @@ tasks:
     cmds:
       - task: docker:console:ruby:rails
         vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:console:ruby_3.2:rails_7.1:
+    cmds:
+      - task: docker:console:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1" }
     interactive: true
 
   ##
@@ -203,14 +246,17 @@ tasks:
       - rm app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
       - rm app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
       - rm app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
+      - rm app/rails_7.1/app/Gemfile.{{.RUBY_VERSION}} 2> /dev/null || true
       - rm app/rails_5.2/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
       - rm app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
       - rm app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
       - rm app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
+      - rm app/rails_7.1/app/Gemfile.{{.RUBY_VERSION}}.lock 2> /dev/null || true
       - rm app/rails_5.2/app/Gemfile.lock 2> /dev/null || true
       - rm app/rails_6.0/app/Gemfile.lock 2> /dev/null || true
       - rm app/rails_6.1/app/Gemfile.lock 2> /dev/null || true
       - rm app/rails_7.0/app/Gemfile.lock 2> /dev/null || true
+      - rm app/rails_7.1/app/Gemfile.lock 2> /dev/null || true
 
   gemfiles:clean:all:
     cmds:
@@ -229,6 +275,7 @@ tasks:
       - cp app/rails_6.0/app/Gemfile app/rails_6.0/app/Gemfile.{{.RUBY_VERSION}}
       - cp app/rails_6.1/app/Gemfile app/rails_6.1/app/Gemfile.{{.RUBY_VERSION}}
       - cp app/rails_7.0/app/Gemfile app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}
+      - cp app/rails_7.1/app/Gemfile app/rails_7.1/app/Gemfile.{{.RUBY_VERSION}}
 
   ##
   # NOTE: Dev only command.

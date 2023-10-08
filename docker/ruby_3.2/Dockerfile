@@ -26,6 +26,8 @@ RUN cd rails_6.1/app && bundle install
 
 RUN cd rails_7.0/app && bundle install
 
+RUN cd rails_7.1/app && bundle install
+
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
 
 ENV IN_DOCKER_CONTAINER=true
