@@ -1,6 +1,44 @@
 version: '3'
 
 tasks:
+  app:rails:new:
+    ##
+    # TODO: Create Rails template.
+    #
+    cmds:
+      ##
+      # NOTE: Actually creates a new Rails app.
+      #
+      - gem install rails -v {{.RAILS_VERSION}}.0
+      - mkdir -p app/rails_{{.RAILS_VERSION}}
+      - cd app/rails_{{.RAILS_VERSION}} && rails _{{.RAILS_VERSION}}.0_ new app --api --database=mysql --skip-test --skip-git
+      ##
+      # NOTE: Removes `.ruby-version`.
+      #
+      - rm app/rails_{{.RAILS_VERSION}}/app/.ruby-version
+      ##
+      # NOTE: Places MySQL config.
+      #
+      - rm app/rails_{{.RAILS_VERSION}}/app/config/database.yml
+      - cp app/rails_common/database.yml app/rails_{{.RAILS_VERSION}}/app/config/database.yml
+      ##
+      # NOTE: Replaces `ruby "x.x.x"` to `ruby ENV["RUBY_VERSION"].to_s`.
+      #
+      - cat app/rails_{{.RAILS_VERSION}}/app/Gemfile | ruby -pe 'gsub(/^ruby.*$/, "ruby ENV[\"RUBY_VERSION\"].to_s")' > app/rails_{{.RAILS_VERSION}}/app/Gemfile.temp
+      - rm app/rails_{{.RAILS_VERSION}}/app/Gemfile
+      - cp app/rails_{{.RAILS_VERSION}}/app/Gemfile.temp app/rails_{{.RAILS_VERSION}}/app/Gemfile
+      - rm app/rails_{{.RAILS_VERSION}}/app/Gemfile.temp
+      ##
+      # NOTE: Appends `require_relative "../../../rails_common/database_prefix_env_variable"` to `config/boot.rb`.
+      # - https://linuxize.com/post/bash-append-to-file/#append-to-a-file-using-the-redirection-operator-
+      #
+      - echo -e '\nrequire_relative "../../../rails_common/database_prefix_env_variable"' >> app/rails_7.1/app/config/boot.rb
+      ##
+      # NOTE: Replaces original `README.md`.
+      #
+      - rm app/rails_{{.RAILS_VERSION}}/app/README.md
+      - echo -e '# Setup\n\n- This app was created by `task app:rails:new RAILS_VERSION={{.RAILS_VERSION}}`.' >> app/rails_{{.RAILS_VERSION}}/app/README.md
+
   docker:bash:ruby_2.7:
     cmds:
       - task: gemfiles:copy
