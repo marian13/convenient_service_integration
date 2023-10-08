@@ -28,7 +28,7 @@
 | [Rails 6.1](https://api.rubyonrails.org/v6.1/) | ✅ | - |
 | [Rails 7.0](https://api.rubyonrails.org/v7.0/) | ✅ | - |
 
-### [Ruby 3.2](https://ruby-doc.org/core-3.2.0/)
+### [Ruby 3.2](https://ruby-doc.org/3.2/)
 
 | **Rails Version** | **Status** | **Notes** |
 | - | - | - |
