@@ -9,3 +9,4 @@
 | Medium | 🚧 | Set up [RSpec](https://github.com/rspec/rspec-rails) | |
 | Medium | 🚧 | Set up [GitHub Actions](https://github.com/features/actions) | |
 | Medium | 🚧 | Set up [Convenient Service](https://github.com/marian13/convenient_service) | |
+| High | 🚧 | Link to `rails_common/database.yml` | |
