@@ -223,6 +223,144 @@ tasks:
         vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1" }
     interactive: true
 
+  docker:server:ruby:rails:
+    preconditions:
+      ##
+      # - https://github.com/go-task/task/issues/241
+      #
+      - sh: "[ '{{.RAILS_PORT}}' != '<no value>' ]"
+        msg: "ENV variable `RAILS_PORT` is NOT set"
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "{{.RUBY_VERSION}}" }
+      - rm app/rails_{{.RAILS_VERSION}}/app/tmp/pids/server.pid 2> /dev/null || true
+      ##
+      # NOTE: `-b 0.0.0.0` makes Rails server accessible from all hosts.
+      # - https://stackoverflow.com/a/29084070/12201472
+      #
+      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails db:create && bundle exec rails db:migrate'
+      - docker compose run --rm --publish {{.RAILS_PORT}}:{{.RAILS_PORT}} ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails server --port {{.RAILS_PORT}} -b 0.0.0.0'
+
+  docker:server:ruby_2.7:rails_5.2:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2" }
+    interactive: true
+
+  docker:server:ruby_2.7:rails_6.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0" }
+    interactive: true
+
+  docker:server:ruby_2.7:rails_6.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1" }
+    interactive: true
+
+  docker:server:ruby_2.7:rails_7.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:server:ruby_2.7:rails_7.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1" }
+    interactive: true
+
+  docker:server:ruby_3.0:rails_5.2:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "5.2" }
+    interactive: true
+
+  docker:server:ruby_3.0:rails_6.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.0" }
+    interactive: true
+
+  docker:server:ruby_3.0:rails_6.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.1" }
+    interactive: true
+
+  docker:server:ruby_3.0:rails_7.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:server:ruby_3.0:rails_7.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1" }
+    interactive: true
+
+  docker:server:ruby_3.1:rails_5.2:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "5.2" }
+    interactive: true
+
+  docker:server:ruby_3.1:rails_6.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.0" }
+    interactive: true
+
+  docker:server:ruby_3.1:rails_6.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.1" }
+    interactive: true
+
+  docker:server:ruby_3.1:rails_7.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:server:ruby_3.1:rails_7.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1" }
+    interactive: true
+
+  docker:server:ruby_3.2:rails_5.2:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "5.2" }
+    interactive: true
+
+  docker:server:ruby_3.2:rails_6.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.0" }
+    interactive: true
+
+  docker:server:ruby_3.2:rails_6.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.1" }
+    interactive: true
+
+  docker:server:ruby_3.2:rails_7.0:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0" }
+    interactive: true
+
+  docker:server:ruby_3.2:rails_7.1:
+    cmds:
+      - task: docker:server:ruby:rails
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1" }
+    interactive: true
+
   ##
   # NOTE: Dev only command.
   # NOTE: macOS specific command.
