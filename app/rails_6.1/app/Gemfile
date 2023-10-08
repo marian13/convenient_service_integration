@@ -38,13 +38,3 @@ end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
-
-##
-# NOTE: Stdlib `gem 'stringio'` is needed to avoid the following exception that is triggered by `bundle exec rails console` in Ruby 2.7 + Rails 5.2 / Rails 6.0:
-#
-#   /usr/local/bundle/gems/rb-fsevent-0.11.2/lib/otnetstring.rb:22:in `require': superclass mismatch for class StringIO (TypeError)
-#
-# - https://stackoverflow.com/a/73228547/12201472
-# - https://stackoverflow.com/questions/70026904/ruby-on-rails-error-superclass-mismatch-for-class-stringio-typeerror
-#
-gem 'stringio', '~> 0.1.0'
