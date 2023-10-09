@@ -39,6 +39,11 @@ tasks:
       #
       - echo -e '\ngem "appraisal", "~> 2.5.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
       ##
+      # NOTE: Creates a link to `Appraisals` inside Rails app.
+      # - https://stackoverflow.com/a/44786859/12201472
+      #
+      - ln -f app/rails_common/Appraisals app/rails_{{.RAILS_VERSION}}/app/Appraisals
+      ##
       # NOTE: Appends `require_relative "../../../rails_common/database_prefix_env_variable"` to `config/boot.rb`.
       # - https://linuxize.com/post/bash-append-to-file/#append-to-a-file-using-the-redirection-operator-
       #
@@ -72,6 +77,14 @@ tasks:
     cmds:
       - rm -rf app/rails_{{.RAILS_VERSION}}
 
+  appraisals:link:
+    cmds:
+      - ln -f app/rails_common/Appraisals app/rails_5.2/app/Appraisals
+      - ln -f app/rails_common/Appraisals app/rails_6.0/app/Appraisals
+      - ln -f app/rails_common/Appraisals app/rails_6.1/app/Appraisals
+      - ln -f app/rails_common/Appraisals app/rails_7.0/app/Appraisals
+      - ln -f app/rails_common/Appraisals app/rails_7.1/app/Appraisals
+
   docker:bash:ruby_2.7:
     cmds:
       - task: gemfiles:copy
@@ -99,6 +112,16 @@ tasks:
         vars: { RUBY_VERSION: "3.2" }
       - docker compose run --rm ruby_3.2 bash
     interactive: true
+
+  docker:build:all:
+    cmds:
+      - task: gemfiles:clean:all
+      - task: gemfiles:copy:all
+      - task: appraisals:link
+      ##
+      # - https://docs.docker.com/engine/reference/commandline/compose_build
+      #
+      - docker compose build
 
   docker:console:ruby:rails:
     internal: true
@@ -419,6 +442,16 @@ tasks:
       - cp app/rails_7.0/app/Gemfile app/rails_7.0/app/Gemfile.{{.RUBY_VERSION}}
       - cp app/rails_7.1/app/Gemfile app/rails_7.1/app/Gemfile.{{.RUBY_VERSION}}
 
+  gemfiles:copy:all:
+    cmds:
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "2.7" }
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.0" }
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.1" }
+      - task: gemfiles:copy
+        vars: { RUBY_VERSION: "3.2" }
   ##
   # NOTE: Dev only command.
   # NOTE: macOS specific command.
