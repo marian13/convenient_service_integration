@@ -59,6 +59,9 @@ tasks:
       # NOTE: Multiline commands.
       # - https://github.com/go-task/task/issues/274
       #
+      # NOTE: `command; cd $OLDPWD` docs.
+      # - https://superuser.com/a/862551/1180656
+      #
       - |
         echo -e 'Further manual steps:\n'
         echo -e '- Add `RUN cd rails_{{.RAILS_VERSION}}/app && bundle install` to all `docker/ruby_x.x/Dockerfile` files.'
@@ -67,6 +70,7 @@ tasks:
         echo -e '- Introduce `docker:console:ruby_x.x:rails_{{.RAILS_VERSION}}` tasks.'
         echo -e '- Add `gem "rspec", "~> *.*.*", group: [:development, :test]` to Gemfile.'
         echo -e '- Add `gem "rspec-rails", "~> *.*.*", group: [:development, :test]` to Gemfile.'
+        echo -e '- Execute `cd app/rails_{{.RAILS_VERSION}}/app && bundle exec rails generate rspec:install; cd $OLDPWD`.'
         echo -e '- Rebuild Docker images.'
 
   app:rails:delete:
