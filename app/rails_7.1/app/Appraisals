@@ -1,0 +1,58 @@
+# frozen_string_literal: true
+
+##
+# This wrapper appends Ruby engine and version to the `appraisal_name`.
+# This way every Appraisal has a dedicated Gemfile for any combination of Ruby and particular `appraisal_name`.
+# For example: `ruby_2.7_sidekiq_5`, `ruby_3.0_sidekiq_5`, `ruby_3.2_sidekiq_5`, etc.
+#
+# @note Check `gemfiles` directory.
+#
+# @see https://github.com/thoughtbot/appraisal
+# @see https://github.com/thoughtbot/appraisal/blob/v2.4.1/lib/appraisal/appraisal_file.rb#L30
+#
+# @param appraisal_name [String]
+# @param block [Proc]
+# @return [void]
+#
+# @internal
+#   Taskfile uses a combination of Ruby engine, Ruby version and `appraisal_name` as `{{.APPRAISAL_NAME}}`.
+#
+def appraise(appraisal_name, &block)
+  super([::RUBY_ENGINE, ::RUBY_VERSION, appraisal_name].join("_"), &block)
+end
+
+appraise "sidekiq_5" do
+  ##
+  # - https://github.com/sidekiq/sidekiq/blob/v5.0.0/sidekiq.gemspec
+  #
+  gem "sidekiq", "~> 5.0.0"
+
+  ##
+  # - https://github.com/mhenrixon/sidekiq-unique-jobs/blob/v6.0.0/sidekiq-unique-jobs.gemspec#L30
+  #
+  gem "sidekiq-unique-jobs", "~> 6.0.0"
+end
+
+appraise "sidekiq_6" do
+  ##
+  # - https://github.com/sidekiq/sidekiq/blob/v6.0.0/sidekiq.gemspec
+  #
+  gem "sidekiq", "~> 6.0.0"
+
+  ##
+  # - https://github.com/mhenrixon/sidekiq-unique-jobs/blob/v7.0.0/sidekiq-unique-jobs.gemspec#L75
+  #
+  gem "sidekiq-unique-jobs", "~> 7.0.0"
+end
+
+appraise "sidekiq_7" do
+  ##
+  # - https://github.com/sidekiq/sidekiq/blob/v7.0.0/sidekiq.gemspec
+  #
+  gem "sidekiq", "~> 7.0.0"
+
+  ##
+  # - https://github.com/mhenrixon/sidekiq-unique-jobs/blob/v8.0.0/sidekiq-unique-jobs.gemspec#L47
+  #
+  gem "sidekiq-unique-jobs", "~> 8.0.0"
+end
