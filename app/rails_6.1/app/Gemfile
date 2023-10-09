@@ -40,3 +40,10 @@ end
 gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
 
 gem "appraisal", "~> 2.5.0"
+
+gem "rspec", "~> 3.12.0", group: [:development, :test]
+
+##
+# - https://github.com/rspec/rspec-rails/blob/6-0-maintenance/rspec-rails.gemspec#L54
+#
+gem "rspec-rails", "~> 6.0.0", group: [:development, :test]

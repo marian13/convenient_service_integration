@@ -53,3 +53,10 @@ if ENV["RUBY_VERSION"].to_s.start_with?("2.7")
 end
 
 gem "appraisal", "~> 2.5.0"
+
+gem "rspec", "~> 3.11.0", group: [:development, :test]
+
+##
+# - https://github.com/rspec/rspec-rails/blob/5-1-maintenance/rspec-rails.gemspec#L54
+#
+gem "rspec-rails", "~> 5.0.0", group: [:development, :test]

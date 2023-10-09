@@ -65,6 +65,8 @@ tasks:
         echo -e '- Update `gemfiles:clean` task.'
         echo -e '- Update `gemfiles:copy` task.'
         echo -e '- Introduce `docker:console:ruby_x.x:rails_{{.RAILS_VERSION}}` tasks.'
+        echo -e '- Add `gem "rspec", "~> *.*.*", group: [:development, :test]` to Gemfile.'
+        echo -e '- Add `gem "rspec-rails", "~> *.*.*", group: [:development, :test]` to Gemfile.'
         echo -e '- Rebuild Docker images.'
 
   app:rails:delete:
