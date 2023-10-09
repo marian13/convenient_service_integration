@@ -35,10 +35,14 @@ tasks:
       - cp app/rails_{{.RAILS_VERSION}}/app/Gemfile.temp app/rails_{{.RAILS_VERSION}}/app/Gemfile
       - rm app/rails_{{.RAILS_VERSION}}/app/Gemfile.temp
       ##
+      # NOTE: Adds `appraisal` to `Gemfile`.
+      #
+      - echo -e '\ngem "appraisal", "~> 2.5.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
+      ##
       # NOTE: Appends `require_relative "../../../rails_common/database_prefix_env_variable"` to `config/boot.rb`.
       # - https://linuxize.com/post/bash-append-to-file/#append-to-a-file-using-the-redirection-operator-
       #
-      - echo -e '\nrequire_relative "../../../rails_common/database_prefix_env_variable"' >> app/rails_7.1/app/config/boot.rb
+      - echo -e '\nrequire_relative "../../../rails_common/database_prefix_env_variable"' >> app/rails_{{.RAILS_VERSION}}/app/config/boot.rb
       ##
       # NOTE: Replaces original `README.md`.
       #

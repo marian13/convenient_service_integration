@@ -50,3 +50,5 @@ group :development do
     gem "error_highlight", ">= 0.4.0", platforms: [:ruby]
   end
 end
+
+gem "appraisal", "~> 2.5.0"

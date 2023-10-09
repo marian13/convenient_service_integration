@@ -55,3 +55,5 @@ if ENV["RUBY_VERSION"].to_s.start_with?("2.7")
   #
   gem "stringio", "~> 0.1.0"
 end
+
+gem "appraisal", "~> 2.5.0"
