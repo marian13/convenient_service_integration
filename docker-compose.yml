@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  sidekiq_redis_7.2:
+    image: redis:7.2
+    container_name: sidekiq_redis_7.2
+    restart: always
+    ports:
+      - ${SIDEKIQ_REDIS_PORT}:${SIDEKIQ_REDIS_PORT}
+    volumes:
+      - ./tmp/sidekiq_redis_7.2/data:/root/redis
+    environment:
+      REDIS_PORT: ${SIDEKIQ_REDIS_PORT}
+
   mysql_5.7:
     image: mysql:5.7
     container_name: mysql_5.7
@@ -22,6 +33,7 @@ services:
     container_name: ruby_2.7
     depends_on:
       - mysql_5.7
+      - sidekiq_redis_7.2
     environment:
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -39,6 +51,7 @@ services:
     container_name: ruby_3.0
     depends_on:
       - mysql_5.7
+      - sidekiq_redis_7.2
     environment:
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -56,6 +69,7 @@ services:
     container_name: ruby_3.1
     depends_on:
       - mysql_5.7
+      - sidekiq_redis_7.2
     environment:
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -73,6 +87,7 @@ services:
     container_name: ruby_3.2
     depends_on:
       - mysql_5.7
+      - sidekiq_redis_7.2
     environment:
       MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
