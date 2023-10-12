@@ -26,7 +26,7 @@ tasks:
       # NOTE: Places MySQL config.
       #
       - rm app/rails_{{.RAILS_VERSION}}/app/config/database.yml
-      - cp app/rails_common/database.yml app/rails_{{.RAILS_VERSION}}/app/config/database.yml
+      - cp app/rails_common/app/config/database.yml app/rails_{{.RAILS_VERSION}}/app/config/database.yml
       ##
       # NOTE: Replaces `ruby "x.x.x"` to `ruby ENV["RUBY_VERSION"].to_s`.
       #
@@ -42,7 +42,7 @@ tasks:
       # NOTE: Creates a link to `Appraisals` inside Rails app.
       # - https://stackoverflow.com/a/44786859/12201472
       #
-      - ln -f app/rails_common/Appraisals app/rails_{{.RAILS_VERSION}}/app/Appraisals
+      - ln -f app/rails_common/app/Appraisals app/rails_{{.RAILS_VERSION}}/app/Appraisals
       ##
       # NOTE: Appends `require_relative "../../../rails_common/database_prefix_env_variable"` to `config/boot.rb`.
       # - https://linuxize.com/post/bash-append-to-file/#append-to-a-file-using-the-redirection-operator-
@@ -83,14 +83,6 @@ tasks:
     cmds:
       - rm -rf app/rails_{{.RAILS_VERSION}}
 
-  appraisals:link:
-    cmds:
-      - ln -f app/rails_common/Appraisals app/rails_5.2/app/Appraisals
-      - ln -f app/rails_common/Appraisals app/rails_6.0/app/Appraisals
-      - ln -f app/rails_common/Appraisals app/rails_6.1/app/Appraisals
-      - ln -f app/rails_common/Appraisals app/rails_7.0/app/Appraisals
-      - ln -f app/rails_common/Appraisals app/rails_7.1/app/Appraisals
-
   docker:bash:ruby_2.7:
     cmds:
       - task: gemfiles:copy
@@ -123,7 +115,7 @@ tasks:
     cmds:
       - task: gemfiles:clean:all
       - task: gemfiles:copy:all
-      - task: appraisals:link
+      - task: link:all
       ##
       # - https://docs.docker.com/engine/reference/commandline/compose_build
       #
@@ -466,6 +458,27 @@ tasks:
   github:open:
     cmds:
       - open -na "Google Chrome" --args --new-window --incognito "https://github.com/marian13/convenient_service_integration"
+
+  link:all:
+    cmds:
+      - task: link:appraisals
+      - task: link:database
+
+  link:appraisals:
+    cmds:
+      - ln -f app/rails_common/app/Appraisals app/rails_5.2/app/Appraisals
+      - ln -f app/rails_common/app/Appraisals app/rails_6.0/app/Appraisals
+      - ln -f app/rails_common/app/Appraisals app/rails_6.1/app/Appraisals
+      - ln -f app/rails_common/app/Appraisals app/rails_7.0/app/Appraisals
+      - ln -f app/rails_common/app/Appraisals app/rails_7.1/app/Appraisals
+
+  link:database:
+    cmds:
+      - ln -f app/rails_common/app/config/database.yml app/rails_5.2/app/config/database.yml
+      - ln -f app/rails_common/app/config/database.yml app/rails_6.0/app/config/database.yml
+      - ln -f app/rails_common/app/config/database.yml app/rails_6.1/app/config/database.yml
+      - ln -f app/rails_common/app/config/database.yml app/rails_7.0/app/config/database.yml
+      - ln -f app/rails_common/app/config/database.yml app/rails_7.1/app/config/database.yml
 
   ##
   # NOTE: Dev only command.
