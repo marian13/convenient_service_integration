@@ -44,7 +44,7 @@ tasks:
       #
       - ln -f app/rails_common/app/Appraisals app/rails_{{.RAILS_VERSION}}/app/Appraisals
       ##
-      # NOTE: Creates a link to `Sidekiq` config.
+      # NOTE: Creates a link to `Sidekiq` configuration.
       # - https://github.com/sidekiq/sidekiq/wiki/Using-Redis#using-an-initializer
       #
       - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_{{.RAILS_VERSION}}/app/config/initializers/sidekiq.rb
@@ -428,6 +428,7 @@ tasks:
     cmds:
       - task: link:appraisals
       - task: link:database
+      - task: link:sidekiq
 
   link:appraisals:
     cmds:
@@ -445,11 +446,25 @@ tasks:
       - ln -f app/rails_common/app/config/database.yml app/rails_7.0/app/config/database.yml
       - ln -f app/rails_common/app/config/database.yml app/rails_7.1/app/config/database.yml
 
+  link:sidekiq:
+    cmds:
+      - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_5.2/app/config/initializers/sidekiq.rb
+      - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_6.0/app/config/initializers/sidekiq.rb
+      - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_6.1/app/config/initializers/sidekiq.rb
+      - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_7.0/app/config/initializers/sidekiq.rb
+      - ln -f app/rails_common/app/config/initializers/sidekiq.rb app/rails_7.1/app/config/initializers/sidekiq.rb
+
+  ##
+  # NOTE: `prepare:minimal` includes tasks that do NOT require docker images rebuild.
+  #
   prepare:minimal:
     cmds:
       - task: gemfiles:copy:all
       - task: link:all
 
+  ##
+  # NOTE: `prepare:full` includes `prepare:minimal` + tasks that require docker images rebuild.
+  #
   prepare:full:
     cmds:
       - task: gemfiles:clean:all
