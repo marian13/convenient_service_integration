@@ -42,7 +42,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./app:/app
+      - .:/project
 
   ruby_3.0:
     build:
@@ -60,7 +60,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./app:/app
+      - .:/project
 
   ruby_3.1:
     build:
@@ -78,7 +78,7 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./app:/app
+      - .:/project
 
   ruby_3.2:
     build:
@@ -96,4 +96,4 @@ services:
     stdin_open: true
     tty: true
     volumes:
-      - ./app:/app
+      - .:/project
