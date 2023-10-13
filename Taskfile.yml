@@ -41,6 +41,10 @@ tasks:
       #
       - echo -e '\ngem "appraisal", "~> 2.5.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
       ##
+      # NOTE: Adds `redis-namespace` to `Gemfile`.
+      #
+      - echo -e '\ngem "redis-namespace", "~> 1.11.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
+      ##
       # NOTE: Creates a link to `Appraisals` inside Rails app.
       # - https://stackoverflow.com/a/44786859/12201472
       #
