@@ -146,6 +146,13 @@ tasks:
       # - https://docs.docker.com/engine/reference/commandline/compose_build
       #
       - docker compose build
+      ##
+      # TODO: `vendor` folder to cache Ruby gems.
+      #
+      - docker compose run --rm ruby_2.7 bash -c "task deps:install:all"
+      - docker compose run --rm ruby_3.0 bash -c "task deps:install:all"
+      - docker compose run --rm ruby_3.1 bash -c "task deps:install:all"
+      - docker compose run --rm ruby_3.2 bash -c "task deps:install:all"
 
   docker:console:ruby:rails:
     requires:
