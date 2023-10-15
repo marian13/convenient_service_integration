@@ -2,8 +2,8 @@
 # - https://github.com/sidekiq/sidekiq/wiki/Using-Redis#using-an-initializer
 #
 redis_config = {
-  url: ENV["SIDEKIQ_REDIS_URL"],
-  namespace: ENV["DATABASE_PREFIX"]
+  url: ENV.fetch("SIDEKIQ_REDIS_URL"),
+  namespace: ENV.fetch("DATABASE_PREFIX")
 }
 
 Sidekiq.configure_server do |config|
