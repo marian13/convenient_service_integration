@@ -1,12 +1,6 @@
 version: '3'
 
 tasks:
-  appraisal:name:
-    requires:
-      vars: [RUBY_VERSION, RAILS_VERSION, SIDEKIQ_VERSION]
-    cmds:
-      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c "ruby -e 'print [::RUBY_ENGINE, ::RUBY_VERSION, \"sidekiq_{{.SIDEKIQ_VERSION}}\"].join(\"_\")'"
-
   app:rails:new:
     requires:
       vars: [RAILS_VERSION]
@@ -405,10 +399,19 @@ tasks:
     cmds:
       - task: prepare:minimal
         vars: { RUBY_VERSION: "{{.RUBY_VERSION}}" }
-      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd app/rails_{{.RAILS_VERSION}}/app && bundle exec appraisal {{.APPRAISAL_NAME}} sidekiq'
-    vars:
-      APPRAISAL_NAME:
-        task: appraisal:name
+      - |
+        docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c '
+          APPRAISAL_NAME=$(SIDEKIQ_VERSION={{.SIDEKIQ_VERSION}} ruby appraisal_name.rb) \
+            && echo -e "\n" \
+            && echo -e "RUBY_VERSION    - \"{{.RUBY_VERSION}}\"" \
+            && echo -e "RAILS_VERSION   - \"{{.RAILS_VERSION}}\"" \
+            && echo -e "SIDEKIQ_VERSION - \"{{.SIDEKIQ_VERSION}}\"" \
+            && echo -e "APPRAISAL_NAME  - \"${APPRAISAL_NAME}\"" \
+            && echo -e "\n" \
+            && cd app/rails_{{.RAILS_VERSION}}/app \
+            && bundle exec appraisal generate \
+            && bundle exec appraisal ${APPRAISAL_NAME} sidekiq
+        '
     interactive: true
     internal: true
 
@@ -746,6 +749,11 @@ tasks:
       - rm app/rails_6.1/app/Gemfile.lock 2> /dev/null || true
       - rm app/rails_7.0/app/Gemfile.lock 2> /dev/null || true
       - rm app/rails_7.1/app/Gemfile.lock 2> /dev/null || true
+      - rm -rf app/rails_5.2/app/gemfiles
+      - rm -rf app/rails_6.0/app/gemfiles
+      - rm -rf app/rails_6.1/app/gemfiles
+      - rm -rf app/rails_7.0/app/gemfiles
+      - rm -rf app/rails_7.1/app/gemfiles
 
   gemfiles:clean:all:
     cmds:
