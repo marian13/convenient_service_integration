@@ -17,8 +17,14 @@
 # @internal
 #   Taskfile uses a combination of Ruby engine, Ruby version and `appraisal_name` as `{{.APPRAISAL_NAME}}`.
 #
+# @internal
+#   NOTE: This is an Appraisal name setter.
+#   NOTE: `normalize` is duplicated in `appraisal_name.rb`.
+#
 def appraise(appraisal_name, &block)
-  super([::RUBY_ENGINE, ::RUBY_VERSION, appraisal_name].join("_"), &block)
+  normalize = -> (version) { version.to_s.split(".").take(2).join("_") }
+
+  super([::RUBY_ENGINE, normalize[::RUBY_VERSION], appraisal_name].join("_"), &block)
 end
 
 appraise "sidekiq_5" do
