@@ -20,23 +20,23 @@ ENV BUNDLE_GEMFILE=Gemfile.2.7
 
 RUN cd app/rails_5.2/app && bundle install
 
-RUN cd app/rails_5.2/app && bundle exec appraisal install
+RUN cd app/rails_5.2/app && bundle exec appraisal generate && bundle exec appraisal install
 
 RUN cd app/rails_6.0/app && bundle install
 
-RUN cd app/rails_6.0/app && bundle exec appraisal install
+RUN cd app/rails_6.0/app && bundle exec appraisal generate && bundle exec appraisal install
 
 RUN cd app/rails_6.1/app && bundle install
 
-RUN cd app/rails_6.1/app && bundle exec appraisal install
+RUN cd app/rails_6.1/app && bundle exec appraisal generate && bundle exec appraisal install
 
 RUN cd app/rails_7.0/app && bundle install
 
-RUN cd app/rails_7.0/app && bundle exec appraisal install
+RUN cd app/rails_7.0/app && bundle exec appraisal generate && bundle exec appraisal install
 
 RUN cd app/rails_7.1/app && bundle install
 
-RUN cd app/rails_7.1/app && bundle exec appraisal install
+RUN cd app/rails_7.1/app && bundle exec appraisal generate && bundle exec appraisal install
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
 
