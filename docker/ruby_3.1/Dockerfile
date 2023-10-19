@@ -16,7 +16,7 @@ WORKDIR /project
 
 COPY . /project
 
-ENV BUNDLE_GEMFILE=Gemfile.2.7
+ENV BUNDLE_GEMFILE=Gemfile.3.1
 
 RUN cd app/rails_5.2/app && bundle install
 
