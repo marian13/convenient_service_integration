@@ -4,7 +4,7 @@
 #   NOTE: `normalize` is duplicated in `Appraisals`.
 #   NOTE: Used by `task docker:start:ruby_*.*:rails_*.*:sidekiq_*` tasks.
 #
-normalize = -> (version) { version.to_s.split(/[\.-]/).take(2).join("_") }
+normalize = -> (version) { version.to_s.split(".").take(2).join("_") }
 
 appraisal_name =
   [
