@@ -471,9 +471,9 @@ tasks:
       - task: docker:console:ruby:rails:sidekiq
         vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby:rails:
+  docker:server:ruby:rails:sidekiq:
     requires:
-      vars: [RUBY_VERSION, RAILS_VERSION]
+      vars: [RUBY_VERSION, RAILS_VERSION, SIDEKIQ_VERSION, RAILS_PORT]
     cmds:
       - task: prepare:minimal
         vars: { RUBY_VERSION: "{{.RUBY_VERSION}}" }
@@ -482,110 +482,325 @@ tasks:
       # NOTE: `-b 0.0.0.0` makes Rails server accessible from all hosts.
       # - https://stackoverflow.com/a/29084070/12201472
       #
-      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails db:create && bundle exec rails db:migrate'
-      - docker compose run --rm --publish {{.RAILS_PORT}}:{{.RAILS_PORT}} ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails server --port {{.RAILS_PORT}} -b 0.0.0.0'
+      - |
+        docker compose run \
+          --rm \
+          --publish {{.RAILS_PORT}}:{{.RAILS_PORT}} \
+          ruby_{{.RUBY_VERSION}} bash -c '
+            APPRAISAL_NAME=$(SIDEKIQ_VERSION={{.SIDEKIQ_VERSION}} ruby appraisal_name.rb) \
+              && echo -e "\n" \
+              && echo -e "RUBY_VERSION    - \"{{.RUBY_VERSION}}\"" \
+              && echo -e "RAILS_VERSION   - \"{{.RAILS_VERSION}}\"" \
+              && echo -e "SIDEKIQ_VERSION - \"{{.SIDEKIQ_VERSION}}\"" \
+              && echo -e "APPRAISAL_NAME  - \"${APPRAISAL_NAME}\"" \
+              && echo -e "\n" \
+              && cd app/rails_{{.RAILS_VERSION}}/app \
+              && bundle exec appraisal ${APPRAISAL_NAME} rails db:create \
+              && bundle exec appraisal ${APPRAISAL_NAME} rails db:migrate \
+              && bundle exec appraisal ${APPRAISAL_NAME} rails server --port {{.RAILS_PORT}} -b 0.0.0.0
+          '
     interactive: true
     internal: true
 
-  docker:server:ruby_2.7:rails_5.2:
+  docker:server:ruby_2.7:rails_5.2:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_2.7:rails_6.0:
+  docker:server:ruby_2.7:rails_5.2:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_2.7:rails_6.1:
+  docker:server:ruby_2.7:rails_5.2:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_2.7:rails_7.0:
+  docker:server:ruby_2.7:rails_6.0:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_2.7:rails_7.1:
+  docker:server:ruby_2.7:rails_6.0:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_3.0:rails_5.2:
+  docker:server:ruby_2.7:rails_6.0:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "5.2" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_3.0:rails_6.0:
+  docker:server:ruby_2.7:rails_6.1:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_3.0:rails_6.1:
+  docker:server:ruby_2.7:rails_6.1:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_3.0:rails_7.0:
+  docker:server:ruby_2.7:rails_6.1:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_3.0:rails_7.1:
+  docker:server:ruby_2.7:rails_7.0:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_3.1:rails_5.2:
+  docker:server:ruby_2.7:rails_7.0:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "5.2" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_3.1:rails_6.0:
+  docker:server:ruby_2.7:rails_7.0:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_3.1:rails_6.1:
+  docker:server:ruby_2.7:rails_7.1:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_3.1:rails_7.0:
+  docker:server:ruby_2.7:rails_7.1:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_3.1:rails_7.1:
+  docker:server:ruby_2.7:rails_7.1:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "2.7", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_3.2:rails_5.2:
+  docker:server:ruby_3.0:rails_5.2:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "5.2" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_3.2:rails_6.0:
+  docker:server:ruby_3.0:rails_5.2:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "6" }
 
-  docker:server:ruby_3.2:rails_6.1:
+  docker:server:ruby_3.0:rails_5.2:sidekiq_7:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "7" }
 
-  docker:server:ruby_3.2:rails_7.0:
+  docker:server:ruby_3.0:rails_6.0:sidekiq_5:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "5" }
 
-  docker:server:ruby_3.2:rails_7.1:
+  docker:server:ruby_3.0:rails_6.0:sidekiq_6:
     cmds:
-      - task: docker:server:ruby:rails
-        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1" }
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.0:rails_6.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.0:rails_6.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.0:rails_6.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.0:rails_6.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.0:rails_7.0:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.0:rails_7.0:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.0:rails_7.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.0:rails_7.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.0:rails_7.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.0:rails_7.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.0", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.1:rails_5.2:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.1:rails_5.2:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.1:rails_5.2:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.1:rails_6.0:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.1:rails_6.0:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.1:rails_6.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.1:rails_6.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.1:rails_6.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.1:rails_6.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.1:rails_7.0:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.1:rails_7.0:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.1:rails_7.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.1:rails_7.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.1:rails_7.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.1:rails_7.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.1", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.2:rails_5.2:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.2:rails_5.2:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.2:rails_5.2:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "5.2", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.2:rails_6.0:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.2:rails_6.0:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.2:rails_6.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.2:rails_6.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.2:rails_6.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.2:rails_6.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "6.1", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.2:rails_7.0:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.2:rails_7.0:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.2:rails_7.0:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.0", SIDEKIQ_VERSION: "7" }
+
+  docker:server:ruby_3.2:rails_7.1:sidekiq_5:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "5" }
+
+  docker:server:ruby_3.2:rails_7.1:sidekiq_6:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "6" }
+
+  docker:server:ruby_3.2:rails_7.1:sidekiq_7:
+    cmds:
+      - task: docker:server:ruby:rails:sidekiq
+        vars: { RUBY_VERSION: "3.2", RAILS_VERSION: "7.1", SIDEKIQ_VERSION: "7" }
 
   ##
   # NOTE: `docker:start:ruby_*.*:rails_*.*:sidekiq_*` commands were generated by the following script:
