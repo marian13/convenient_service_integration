@@ -154,7 +154,7 @@ tasks:
     cmds:
       - task: prepare:minimal
         vars: { RUBY_VERSION: "{{.RUBY_VERSION}}" }
-      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd /app/rails_{{.RAILS_VERSION}}/app && bundle exec rails console'
+      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c 'cd app/rails_{{.RAILS_VERSION}}/app && bundle exec rails console'
     interactive: true
     internal: true
 
