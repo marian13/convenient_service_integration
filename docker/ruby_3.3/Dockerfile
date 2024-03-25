@@ -1,4 +1,4 @@
-FROM timbru31/ruby-node:3.3-slim-gallium
+FROM timbru31/ruby-node:3.3-slim-hydrogen
 
 RUN apt-get update -qq \
   && apt-get install --no-install-recommends -y git \
@@ -16,28 +16,12 @@ WORKDIR /project
 
 COPY . /project
 
-ENV BUNDLE_GEMFILE=Gemfile.3.3
+ENV RUBY_ENGINE=ruby
 
-RUN cd app/rails_5.2/app && bundle install
-
-RUN cd app/rails_5.2/app && bundle exec appraisal generate && bundle exec appraisal install
-
-RUN cd app/rails_6.0/app && bundle install
-
-RUN cd app/rails_6.0/app && bundle exec appraisal generate && bundle exec appraisal install
-
-RUN cd app/rails_6.1/app && bundle install
-
-RUN cd app/rails_6.1/app && bundle exec appraisal generate && bundle exec appraisal install
-
-RUN cd app/rails_7.0/app && bundle install
-
-RUN cd app/rails_7.0/app && bundle exec appraisal generate && bundle exec appraisal install
-
-RUN cd app/rails_7.1/app && bundle install
-
-RUN cd app/rails_7.1/app && bundle exec appraisal generate && bundle exec appraisal install
+ENV BUNDLE_GEMFILE=Gemfile.${RUBY_ENGINE}_${RUBY_VERSION}
 
 RUN sh -c "$(curl --location https://taskfile.dev/install.sh)" -- -d -b /bin
+
+RUN task deps:install:all
 
 ENV IN_DOCKER_CONTAINER=true
