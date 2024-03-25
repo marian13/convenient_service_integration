@@ -94,7 +94,9 @@ tasks:
     requires:
       vars: [RAILS_VERSION]
     cmds:
+      - task: gemfiles:copy
       - cd app/rails_{{.RAILS_VERSION}}/app && bundle install
+      - cd app/rails_{{.RAILS_VERSION}}/app && bundle exec appraisal generate
       - cd app/rails_{{.RAILS_VERSION}}/app && bundle exec appraisal install
 
   deps:install:all:
@@ -146,6 +148,7 @@ tasks:
       - docker compose run --rm ruby_3.0 bash -c "task deps:install:all"
       - docker compose run --rm ruby_3.1 bash -c "task deps:install:all"
       - docker compose run --rm ruby_3.2 bash -c "task deps:install:all"
+      - docker compose run --rm ruby_3.3 bash -c "task deps:install:all"
 
   ##
   # NOTE: Usage examples.
@@ -155,7 +158,7 @@ tasks:
     cmds:
       - task: prepare:minimal
       - |
-        docker compose run --rm {{RUBY_ENGINE}}_{{.RUBY_VERSION}} bash -c '
+        docker compose run --rm {{.RUBY_ENGINE}}_{{.RUBY_VERSION}} bash -c '
           APPRAISAL_NAME=$(SIDEKIQ_VERSION={{.SIDEKIQ_VERSION}} ruby appraisal_name.rb) \
             && echo -e "\n" \
             && echo -e "RUBY_ENGINE     - \"{{.RUBY_ENGINE}}\"" \
@@ -179,7 +182,6 @@ tasks:
   docker:server:
     cmds:
       - task: prepare:minimal
-        vars: { RUBY_ENGINE: "ruby", RUBY_VERSION: "{{.RUBY_VERSION}}" }
       - rm app/rails_{{.RAILS_VERSION}}/app/tmp/pids/server.pid 2> /dev/null || true
       ##
       # NOTE: `-b 0.0.0.0` makes Rails server accessible from all hosts.
@@ -189,7 +191,7 @@ tasks:
         docker compose run \
           --rm \
           --publish {{.RAILS_PORT}}:{{.RAILS_PORT}} \
-          ruby_{{.RUBY_VERSION}} bash -c '
+          {{.RUBY_ENGINE}}_{{.RUBY_VERSION}} bash -c '
             APPRAISAL_NAME=$(SIDEKIQ_VERSION={{.SIDEKIQ_VERSION}} ruby appraisal_name.rb) \
               && echo -e "\n" \
               && echo -e "RUBY_ENGINE     - \"{{.RUBY_ENGINE}}\"" \
@@ -212,9 +214,8 @@ tasks:
   docker:sidekiq:
     cmds:
       - task: prepare:minimal
-        vars: { RUBY_ENGINE: "ruby", RUBY_VERSION: "{{.RUBY_VERSION}}" }
       - |
-        docker compose run --rm ruby_{{.RUBY_VERSION}} bash -c '
+        docker compose run --rm {{.RUBY_ENGINE}}_{{.RUBY_VERSION}} bash -c '
           APPRAISAL_NAME=$(SIDEKIQ_VERSION={{.SIDEKIQ_VERSION}} ruby appraisal_name.rb) \
             && echo -e "\n" \
             && echo -e "RUBY_ENGINE     - \"{{.RUBY_ENGINE}}\"" \
@@ -251,21 +252,11 @@ tasks:
 
   gemfiles:clean:
     cmds:
-      - rm app/rails_5.2/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}} 2> /dev/null || true
-      - rm app/rails_6.0/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}} 2> /dev/null || true
-      - rm app/rails_6.1/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}} 2> /dev/null || true
-      - rm app/rails_7.0/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}} 2> /dev/null || true
-      - rm app/rails_7.1/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}} 2> /dev/null || true
-      - rm app/rails_5.2/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}}.lock 2> /dev/null || true
-      - rm app/rails_6.0/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}}.lock 2> /dev/null || true
-      - rm app/rails_6.1/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}}.lock 2> /dev/null || true
-      - rm app/rails_7.0/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}}.lock 2> /dev/null || true
-      - rm app/rails_7.1/app/Gemfile.{{.RUBY_ENGINE}}_{{.RUBY_VERSION}}.lock 2> /dev/null || true
-      - rm app/rails_5.2/app/Gemfile.lock 2> /dev/null || true
-      - rm app/rails_6.0/app/Gemfile.lock 2> /dev/null || true
-      - rm app/rails_6.1/app/Gemfile.lock 2> /dev/null || true
-      - rm app/rails_7.0/app/Gemfile.lock 2> /dev/null || true
-      - rm app/rails_7.1/app/Gemfile.lock 2> /dev/null || true
+      - rm app/rails_5.2/app/Gemfile*. 2> /dev/null || true
+      - rm app/rails_6.0/app/Gemfile*. 2> /dev/null || true
+      - rm app/rails_6.1/app/Gemfile*. 2> /dev/null || true
+      - rm app/rails_7.0/app/Gemfile*. 2> /dev/null || true
+      - rm app/rails_7.1/app/Gemfile*. 2> /dev/null || true
       - rm -rf app/rails_5.2/app/gemfiles
       - rm -rf app/rails_6.0/app/gemfiles
       - rm -rf app/rails_6.1/app/gemfiles

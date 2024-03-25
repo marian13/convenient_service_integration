@@ -118,3 +118,24 @@ services:
     tty: true
     volumes:
       - .:/project
+
+  ruby_3.3:
+    build:
+      context: .
+      dockerfile: ./docker/ruby_3.3/Dockerfile
+    container_name: ruby_3.3
+    depends_on:
+      - mysql_5.7
+      - sidekiq_redis_7.2
+    environment:
+      MYSQL_ROOT_USER: ${MYSQL_ROOT_USER}
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_HOST: ${MYSQL_HOST}
+      MYSQL_PORT: ${MYSQL_PORT}
+      SIDEKIQ_REDIS_HOST: ${SIDEKIQ_REDIS_PORT}}
+      SIDEKIQ_REDIS_PORT: ${SIDEKIQ_REDIS_PORT}
+      SIDEKIQ_REDIS_URL: ${SIDEKIQ_REDIS_URL}
+    stdin_open: true
+    tty: true
+    volumes:
+      - .:/project
