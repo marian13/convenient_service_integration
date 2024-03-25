@@ -106,34 +106,26 @@ tasks:
       - task: deps:install
         vars: { RAILS_VERSION: "7.1" }
 
-  docker:bash:ruby:
-    requires:
-      vars: [RUBY_VERSION]
+  ##
+  # NOTE: Usage examples.
+  #   task docker:bash RUBY_ENGINE=ruby RUBY_VERSION=2.7
+  #   task docker:bash RUBY_ENGINE=ruby RUBY_VERSION=3.0
+  #   task docker:bash RUBY_ENGINE=ruby RUBY_VERSION=3.1
+  #   task docker:bash RUBY_ENGINE=ruby RUBY_VERSION=3.2
+  #
+  # NOTE: Naming `RUBY_ENGINE` is inspired by `ruby_engine` gem.
+  # - https://github.com/janlelis/ruby_engine
+  #
+  docker:bash:
     cmds:
       - task: prepare:minimal
-      - docker compose run --rm ruby_{{.RUBY_VERSION}} bash
+      - docker compose run --rm {{.RUBY_ENGINE}}_{{.RUBY_VERSION}} bash
     interactive: true
-    internal: true
-
-  docker:bash:ruby_2.7:
-    cmds:
-      - task: docker:bash:ruby
-        vars: { RUBY_VERSION: "2.7" }
-
-  docker:bash:ruby_3.0:
-    cmds:
-      - task: docker:bash:ruby
-        vars: { RUBY_VERSION: "3.0" }
-
-  docker:bash:ruby_3.1:
-    cmds:
-      - task: docker:bash:ruby
-        vars: { RUBY_VERSION: "3.1" }
-
-  docker:bash:ruby_3.2:
-    cmds:
-      - task: docker:bash:ruby
-        vars: { RUBY_VERSION: "3.2" }
+    preconditions:
+      - sh: '[ "${IN_DOCKER_CONTAINER}" != "true" ]'
+        msg: This task can be invoked only from the host operating system (https://www.ibm.com/cloud/learn/containerization)
+    requires:
+      vars: [ENGINE, VERSION]
 
   docker:build:all:
     cmds:
@@ -144,6 +136,7 @@ tasks:
       - docker compose build
       ##
       # TODO: `vendor` folder to cache Ruby gems.
+      # NOTE: Gemfiles created during the build time are NOT persisted. The following commands persist them by triggering `bundle` in the run time.
       #
       - docker compose run --rm ruby_2.7 bash -c "task deps:install:all"
       - docker compose run --rm ruby_3.0 bash -c "task deps:install:all"
