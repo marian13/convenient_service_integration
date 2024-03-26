@@ -43,10 +43,6 @@ tasks:
       #
       - echo -e '\ngem "appraisal", "~> 2.5.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
       ##
-      # NOTE: Adds `redis-namespace` to `Gemfile`.
-      #
-      - echo -e '\ngem "redis-namespace", "~> 1.11.0"' >> app/rails_{{.RAILS_VERSION}}/app/Gemfile
-      ##
       # NOTE: Creates a link to `Appraisals` inside Rails app.
       # - https://stackoverflow.com/a/44786859/12201472
       #
@@ -77,12 +73,15 @@ tasks:
       #
       - |
         echo -e 'Further manual steps:\n'
-        echo -e '- Add `RUN cd rails_{{.RAILS_VERSION}}/app && bundle install` to all `docker/ruby_x.x/Dockerfile` files.'
         echo -e '- Update `gemfiles:clean` task.'
         echo -e '- Update `gemfiles:copy` task.'
-        echo -e '- Introduce `docker:console:ruby_x.x:rails_{{.RAILS_VERSION}}:sidekiq_x` tasks.'
-        echo -e '- Introduce `docker:server:ruby_x.x:rails_{{.RAILS_VERSION}}:sidekiq_x` tasks.'
-        echo -e '- Introducocker images.'
+        echo -e '- Update `link:appraisals` task.'
+        echo -e '- Update `link:database` task.'
+        echo -e '- Update `link:sidekiq` task.'
+        echo -e '- Add `gem "rspec", "~> *.*.*", group: [:development, :test]` to Gemfile.'
+        echo -e '- Add `gem "rspec-rails", "~> *.*.*", group: [:development, :test]` to Gemfile.'
+        echo -e '- Execute `cd app/rails_{{.RAILS_VERSION}}/app && bundle exec rails generate rspec:install; cd $OLDPWD`.'
+        echo -e '- Rebuild Docker images.'
 
   app:rails:delete:
     requires:
@@ -252,11 +251,11 @@ tasks:
 
   gemfiles:clean:
     cmds:
-      - rm app/rails_5.2/app/Gemfile*. 2> /dev/null || true
-      - rm app/rails_6.0/app/Gemfile*. 2> /dev/null || true
-      - rm app/rails_6.1/app/Gemfile*. 2> /dev/null || true
-      - rm app/rails_7.0/app/Gemfile*. 2> /dev/null || true
-      - rm app/rails_7.1/app/Gemfile*. 2> /dev/null || true
+      - rm app/rails_5.2/app/Gemfile*.* 2> /dev/null || true
+      - rm app/rails_6.0/app/Gemfile*.* 2> /dev/null || true
+      - rm app/rails_6.1/app/Gemfile*.* 2> /dev/null || true
+      - rm app/rails_7.0/app/Gemfile*.* 2> /dev/null || true
+      - rm app/rails_7.1/app/Gemfile*.* 2> /dev/null || true
       - rm -rf app/rails_5.2/app/gemfiles
       - rm -rf app/rails_6.0/app/gemfiles
       - rm -rf app/rails_6.1/app/gemfiles
